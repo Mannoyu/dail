@@ -87,7 +87,15 @@ def run(settings: Settings, now: datetime, *, dry_run: bool = False) -> DailyRep
     raw_count = sum(len(r) for r in records.values())
     if raw_count != mapped_count:
         LOG.info(f"unmapped_records={raw_count - mapped_count}; 请检查账号映射")
-    report = refresh(DailyReport(now.date(), settings.team_name, members, sources=statuses))
+    report = refresh(
+        DailyReport(
+            now.date(),
+            settings.team_name,
+            members,
+            sources=statuses,
+            task_mode=settings.lark.task_mode,
+        )
+    )
     Storage(settings.database).save(report)
     output = write_report(report, settings.output_dir)
     LOG.info(f"report_saved={output.name}")

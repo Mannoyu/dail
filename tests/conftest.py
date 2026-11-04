@@ -24,6 +24,7 @@ def cfg(tmp_path, monkeypatch):
             "github": {"enabled": True, "repos": ["org/repo"]},
             "lark": {
                 "tasks_enabled": True,
+                "task_mode": "events",
                 "project_id": "project",
                 "task_events": str(tmp_path / "events.jsonl"),
                 "messages_enabled": True,

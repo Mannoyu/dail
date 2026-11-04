@@ -3,7 +3,7 @@
 日期：2026-11-04。使用本地虚拟环境；所有自动化外部服务均为 mock。
 
 - `uv sync`：通过；依赖锁定于 uv.lock。
-- `pytest -q`：33 passed。
+- `pytest -q`：40 passed，含 Task v2 分页、子孙任务去重、多负责人、token 刷新、超时重试、历史快照拒绝和展示语义。
 - `ruff check .`、`ruff format --check .`：通过。
 - `mypy collector generator notifier shared main.py`：24 个源文件通过。
 - 浏览器：375px、768px 无横向溢出；成员筛选与空记录展示、阅读/Markdown 切换、方向键切换通过。

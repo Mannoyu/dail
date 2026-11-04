@@ -21,6 +21,8 @@ def refresh(report: DailyReport) -> DailyReport:
     lines = [f"# {text(report.team_name)} · 工作日报", f"日期：{report.date}", ""]
     if report.demo:
         lines += ["> 演示数据，仅用于预览。", ""]
+    if report.task_mode == "tasklist":
+        lines += ["> 任务进展为当日任务清单的当前状态快照，不代表当日状态流转历史。", ""]
     statuses = {s.name: s.state for s in report.sources}
     sections = [("github", "代码提交"), ("tasks", "任务进展"), ("messages", "协作沟通")]
     for member in report.members:
@@ -41,7 +43,12 @@ def refresh(report: DailyReport) -> DailyReport:
                 ]
             elif key == "tasks":
                 rows = [
-                    f"- {text(r.title)} · {text(r.status_from)} → {text(r.status_to)}"
+                    f"- {text(r.title)} · "
+                    + (
+                        f"{text(r.status_from)} → {text(r.status_to)}"
+                        if r.status_from
+                        else f"当前状态：{text(r.status_to)}"
+                    )
                     for r in member.tasks
                 ]
             else:

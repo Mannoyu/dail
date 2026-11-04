@@ -30,6 +30,7 @@ class Lark(StrictModel):
     app_id_env: str = "LARK_APP_ID"
     app_secret_env: str = "LARK_APP_SECRET"
     tasks_enabled: bool = False
+    task_mode: Literal["tasklist", "events"] = "tasklist"
     task_events: str = "data/task-events.jsonl"
     project_id: str = ""
     messages_enabled: bool = False

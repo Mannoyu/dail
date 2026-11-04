@@ -45,11 +45,20 @@ def check(settings: Settings) -> bool:
     if settings.lark.tasks_enabled:
 
         def task_check() -> None:
-            path = Path(settings.lark.task_events)
-            with path.open(encoding="utf-8") as stream:
-                stream.read(1)
+            if settings.lark.task_mode == "events":
+                path = Path(settings.lark.task_events)
+                with path.open(encoding="utf-8") as stream:
+                    stream.read(1)
+            else:
+                from urllib.parse import quote
 
-        checks.append(("task_events_readable", task_check))
+                with APIClient() as api:
+                    LarkClient(api).get(
+                        "/task/v2/tasklists/" + quote(settings.lark.project_id, safe="") + "/tasks",
+                        {"page_size": 1, "user_id_type": "open_id"},
+                    )
+
+        checks.append(("tasks_" + settings.lark.task_mode, task_check))
     if settings.email.enabled:
 
         def email_check() -> None:

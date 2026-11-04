@@ -55,3 +55,4 @@ class DailyReport:
     html: str = ""
     sources: list[SourceStatus] = field(default_factory=list)
     demo: bool = False
+    task_mode: str = "events"

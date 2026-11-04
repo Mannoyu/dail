@@ -22,13 +22,17 @@ uv run python main.py --force --dry-run
 uv run python main.py
 ```
 
-`--check` 对 GitHub 提交读取、飞书消息权限、事件文件可读性和 SMTP 登录执行只读检查。机器人 webhook 仅检查配置格式，**不会试发消息，也不声称验证实际送达**。没有启用数据源时健康检查失败。检查模式不检查当日工作日限制。
+`--check` 对 GitHub、飞书消息、Task v2 清单读取权限（events 模式检查事件文件）和 SMTP 登录执行只读检查。机器人 webhook 仅检查配置格式，**不会试发消息，也不声称验证实际送达**。没有启用检查时失败，检查模式不限制工作日。
 
 真实执行支持当日窗口和 rolling24h。未关联 GitHub 登录身份的提交不会按姓名误归属；请核对日志中的 unmapped_records。
 
-## 任务状态事件接入（待线上适配）
+## 飞书任务接入
 
-普通任务当前状态不等于状态流转历史。需要使用实际飞书项目的授权接口，或由可信上游将精确变更事件写入 `lark.task_events` JSON Lines 文件。**首版尚不提供飞书项目原生 API 或 webhook 接收器。** 每行：
+默认 `lark.task_mode: tasklist` 与参考仓库一致，使用普通飞书 Task v2。`lark.project_id` 填任务清单 GUID，不是 Meego 项目 ID。应用需拥有该清单与任务的读取权限，成员填 open_id。采集器分页读取清单，查找名称为 `M月D日任务清单` 的父任务，并读取其所有子孙任务当前状态。仅归属 assignee，不把关注者当负责人；多负责人会在各自日报出现。
+
+Task v2 当前状态不等于状态流转历史。日报明确标注快照，不虚构旧状态；此模式不按更新时间过滤，因为当日清单中的未变更任务也应展示。只支持当前日期，历史补跑会将任务源标记为失败，其他来源可继续。重复使用相同日名的跨年父任务应由上游归档到其他清单。
+
+需要精确流转或历史补跑时，设置 `lark.task_mode: events`，由可信上游将精确变更事件写入 `lark.task_events` JSON Lines 文件。当前不提供 webhook 接收器。每行：
 
 ```json
 {"event_id":"unique-event-1","project_id":"your-project","assignee":"ou_replace_with_open_id","title":"接口联调","status_from":"进行中","status_to":"已完成","updated_at":"2026-11-04T16:30:00+08:00"}

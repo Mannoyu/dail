@@ -1,6 +1,6 @@
 from generator.formatter import generate, refresh
 from generator.template import email_html
-from shared.models import CommitRecord, MemberReport, SourceStatus
+from shared.models import CommitRecord, MemberReport, SourceStatus, TaskRecord
 
 
 def test_sections_empty_and_external_text_escaped(now):
@@ -22,3 +22,16 @@ def test_failed_source_marked_for_every_member(now):
     refresh(report)
     assert report.markdown.count("数据获取失败") == 2
     assert report.html.count("请检查数据源连接") == 2
+
+
+def test_snapshot_has_current_state_without_invented_transition(now):
+    report = generate(
+        [MemberReport("甲", "a", tasks=[TaskRecord("ou_a", "任务", "", "进行中", now)])],
+        now.date(),
+        "团队",
+    )
+    report.task_mode = "tasklist"
+    refresh(report)
+    assert "当前状态：进行中" in report.markdown
+    assert "→" not in report.markdown
+    assert "项任务快照" in report.html and "不代表状态流转历史" in report.html

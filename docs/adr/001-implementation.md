@@ -8,10 +8,10 @@
 - 时间统一使用带时区 datetime；默认当日 00:00 至执行时刻，支持配置 rolling24h 对应 24 小时验收口径。默认 Asia/Shanghai。
 - 保留采集返回 list 的接口，返回 Collection 子类携带 failed 标志。失败清空本源部分结果，避免伪装完整数据；所有启用源均失败则不生成日报并以非零退出。
 - GitHub 遍历所有可见分支、分页读取提交并按仓库/SHA 去重，详情文件按每页 100 项计数；达到 GitHub 3000 文件枚举上限时显式失败。超时最多额外重试 3 次、间隔默认 5 秒。受单源 45 秒默认预算限制，较长 rate-limit reset 不无限等待，标记失败供下次重跑。大仓库仍需在线性能评估。
-- 飞书“普通任务”与“飞书项目”不是相同 API。现有规范缺少产品、授权和状态历史契约；首版读取上游归档的精确 TaskRecord 事件，不能把当前状态快照当作状态历史。Task 4 的真实项目 API 采集及 token 重试验收仍未完成。
+- 用户指定按参考仓库确定任务产品。核实提交 e45a85793ba419fa652bda3918a0d2dc828e0c40 后，默认接入普通飞书 Task v2：project_id 实为 tasklist GUID，按 M月D日任务清单父任务读取子孙任务快照。与原 SDD 状态变更历史存在差异，MD/HTML 明确标注，不虚构 status_from；快照禁止历史补跑。保留 events 精确流转模式。分页、token 刷新和超时重试通过 mock，真实权限待联调。
 - 飞书消息使用 open_id 账号映射；关键词为空时不采集相关消息；过滤薪资、绩效、裁员。非 text 消息不解析。不执行语义提炼。
 - CN 工作日使用 chinese-calendar（包括法定假日与调休）；日历数据超出支持年份时明确报错，不猜测。Cron 每日触发，由应用判断调休。
 - 凭据仅由环境变量读取，不自动加载 .env。CLI / 日志不输出凭据或原始 HTTP 错误 URL。预览服务只绑定 loopback 且仅暴露 output 目录。
 - 推送失败最多额外重试 2 次，两条配置渠道都会尝试；非零退出和 stderr 作为调度器告警信号。未配置的备用通知渠道不会自动创建。
 
-参考：用户提供的 [同类项目](https://github.com/chenpingan6158-a11y/IDNG.github.io/tree/main)，只核实目录布局；未复制其配置、凭据或源代码。
+参考：用户提供的 [同类项目](https://github.com/chenpingan6158-a11y/IDNG.github.io/tree/e45a85793ba419fa652bda3918a0d2dc828e0c40)，已核实 collector/lark_task.py、collector/_lark_client.py、配置和测试。沿用其任务产品、只读端点及当日清单命名约定；未引入其任务写入、历史分析等范围外功能。

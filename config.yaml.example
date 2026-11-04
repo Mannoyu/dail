@@ -16,10 +16,11 @@ lark:
   app_id_env: LARK_APP_ID
   app_secret_env: LARK_APP_SECRET
   tasks_enabled: true
-  # 标准任务 API 不提供完整状态流转历史。通过事件归档精确采集状态变更。
-  # 每行是 TaskRecord JSON；格式见 docs/operations.md。
+  # 与参考仓库一致：普通飞书 Task v2，查找 M月D日任务清单下的子任务。
+  task_mode: tasklist  # tasklist: 当前状态；events: 精确历史事件归档
+  # 仅 events 模式读取此文件，格式见 docs/operations.md。
   task_events: data/task-events.jsonl
-  project_id: your-project
+  project_id: replace_with_tasklist_guid  # 任务清单 GUID，不是 Meego 项目 ID
   messages_enabled: true
   chat_id: oc_replace_with_chat_id
   chat_name: 项目协作群
