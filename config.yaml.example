@@ -1,0 +1,47 @@
+team_name: 产品研发组
+timezone: Asia/Shanghai
+calendar: CN  # CN: 中国法定工作日（含调休）；weekdays: 仅周一至周五
+window: today  # today 或 rolling24h
+database: data/daily.sqlite3
+output_dir: output
+members:
+  - name: 张三
+    github: zhangsan
+    lark: ou_replace_with_open_id
+github:
+  enabled: true
+  repos: [your-org/your-repo]
+  token_env: GITHUB_TOKEN
+lark:
+  app_id_env: LARK_APP_ID
+  app_secret_env: LARK_APP_SECRET
+  tasks_enabled: true
+  # 标准任务 API 不提供完整状态流转历史。通过事件归档精确采集状态变更。
+  # 每行是 TaskRecord JSON；格式见 docs/operations.md。
+  task_events: data/task-events.jsonl
+  project_id: your-project
+  messages_enabled: true
+  chat_id: oc_replace_with_chat_id
+  chat_name: 项目协作群
+  keywords: [项目, 发布, 联调, 接口]
+  sensitive_keywords: [薪资, 绩效, 裁员]
+email:
+  enabled: false
+  host: smtp.example.com
+  port: 465
+  security: ssl  # ssl / starttls / plain（仅本地测试）
+  username_env: SMTP_USERNAME
+  password_env: SMTP_PASSWORD
+  sender: daily@example.com
+  recipients: [leader@example.com]
+bot:
+  enabled: false
+  webhook_env: LARK_BOT_WEBHOOK
+  signing_secret_env: LARK_BOT_SECRET
+  chat_id: oc_replace_with_chat_id
+http:
+  timeout: 8
+  retries: 3
+  retry_interval: 5
+  max_rate_wait: 10
+  source_deadline: 45

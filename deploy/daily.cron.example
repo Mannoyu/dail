@@ -1,0 +1,3 @@
+# Host timezone must be Asia/Shanghai. Run EVERY day: the application handles CN makeup workdays.
+# Create output/data/logs before installing. Use an absolute project path.
+0 18 * * * cd /srv/daily && /usr/bin/flock -n /srv/daily/data/run.lock /srv/daily/.venv/bin/python main.py >> /srv/daily/logs/daily.jsonl 2>&1

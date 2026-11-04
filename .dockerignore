@@ -1,0 +1,9 @@
+.git
+.venv
+.env
+config.yaml
+data
+output
+tests
+.pytest_cache
+__pycache__
